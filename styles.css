@@ -74,6 +74,10 @@ h2 {
   padding-bottom: 6px;
 }
 
+.header-text{
+  font size: 14px
+}
+
 label {
   display: block;
   margin-top: 12px;
