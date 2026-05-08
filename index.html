@@ -99,10 +99,10 @@
           </span>
         </label>
         <div class="inline">
-          <input type="number" id="energy" placeholder="e.g. 2,50,000">
+          <input type="number" id="energy" placeholder="e.g. 15,00,000">
           <select id="energyPeriod">
-            <option value="monthly">Monthly Average (kWh)</option>
-            <option value="annual">Annual (kWh)</option>           
+            <option value="annual" selected>Annual (kWh)</option>
+            <option value="monthly">Monthly Average (kWh)</option>           
           </select>
         </div>
 
@@ -151,7 +151,7 @@
           Renewable Energy Generation
           <span class="input-help">
             <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
-            <span class="input-help-tooltip">Total energy generated from renewable sources such as solar panels. Available from inverter dashboards or your facilities team</span>
+            <span class="input-help-tooltip">Total energy generated from renewable sources such as solar panels. Available from inverter dashboards or your facilities team.</span>
           </span>
         </label>
 
@@ -162,8 +162,8 @@
             placeholder="e.g. 0"
           />
           <select id="renewablePeriod">
-            <option value="monthly">Monthly Average (kWh)</option>
             <option value="annual" selected>Annual (kWh)</option>
+            <option value="monthly">Monthly Average (kWh)</option>
           </select>
         </div>
 
@@ -171,8 +171,7 @@
           Water Consumption 
           <span class="input-help">
             <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
-            <span class="input-help-tooltip">Total water used by the building from all sources. Typically available from water bills, meter readings, or facilities team
-</span>
+            <span class="input-help-tooltip">Total water used by the building from all sources. Typically available from water bills, meter readings, or facilities team</span>
           </span>
         </label>
 
@@ -183,8 +182,8 @@
             placeholder="e.g. 10,000"
           />
           <select id="waterPeriod">
-            <option value="monthly">Monthly Average (kilolitres)</option>
             <option value="annual" selected>Annual (kilolitres)</option>
+            <option value="monthly">Monthly Average (kilolitres)</option>
             <option value="daily">Daily (kilolitres)</option>
           </select>
         </div>
@@ -371,7 +370,8 @@
 
             <!-- ✅ TARGET LABEL NOW HERE -->
             <div class="hvac-target-label" id="hvacTargetLabel">
-              800 sqft/TR
+              <span>ASSURE KPI</span>
+              <b>800 sqft/TR</b>
             </div>
 
           </div>
