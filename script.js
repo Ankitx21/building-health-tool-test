@@ -79,6 +79,13 @@ function formatMetricValue(value, digits = 1) {
   return Number.isFinite(value) ? value.toFixed(digits) : MISSING_RESULT_TEXT;
 }
 
+function formatEpiLabel(value) {
+  if (!Number.isFinite(value)) return "-";
+  if (value > 0 && value < 0.1) return value.toFixed(3);
+  if (value < 1) return value.toFixed(2);
+  return value < 10 ? value.toFixed(1) : String(Math.round(value));
+}
+
 function clampFloatingElement(element, container, pct, padding = 8) {
   if (!element || !container || !Number.isFinite(pct)) return;
 
@@ -199,7 +206,7 @@ function downloadReport() {
         <div class="item"><span class="label">BEE Star Rating</span><div class="value">${getElementText("outStarRating") || MISSING_RESULT_TEXT}</div></div>
         <div class="item"><span class="label">Energy Performance Index</span><div class="value">${formatMetricValue(latestResults.epi)} kWh/m²/yr</div><div class="note">${getElementText("epiMessage")}</div></div>
         <div class="item"><span class="label">Net Energy Status</span><div class="value">${latestResults.netEnergy > 0 ? "Net Positive" : latestResults.netEnergy < 0 ? "Net Negative" : "Net Zero"}</div><div class="note">${getElementText("netEnergyMsg")}</div></div>
-        <div class="item"><span class="label">HVAC Sizing</span><div class="value">${latestResults.hvacSizing.value || MISSING_RESULT_TEXT}</div><div class="note">${latestResults.hvacSizing.status || ""}</div></div>
+        <div class="item"><span class="label">HVAC Capacity Factor</span><div class="value">${latestResults.hvacSizing.value || MISSING_RESULT_TEXT}</div><div class="note">${latestResults.hvacSizing.status || ""}</div></div>
         <div class="item"><span class="label">Contract Demand Density</span><div class="value">${latestResults.demandSizing.contract || "Not provided"}</div><div class="note">${latestResults.demandSizing.contractStatus || ""}</div></div>
         <div class="item"><span class="label">Backup Power Density</span><div class="value">${latestResults.demandSizing.dg || "Not provided"}</div><div class="note">${latestResults.demandSizing.dgStatus || ""}</div></div>
         <div class="item"><span class="label">Water Efficiency</span><div class="value">${Number.isFinite(latestResults.lpcd) ? `${latestResults.lpcd.toFixed(1)} lpcd` : MISSING_RESULT_TEXT}</div><div class="note">${latestResults.waterStatus.text || ""}</div></div>
@@ -368,7 +375,8 @@ function readNumber(id) {
   if (!el) return NaN;
   const v = el.value;
   if (v === null || v === undefined || v.trim() === "") return NaN;
-  return Number(v);
+  const normalized = v.replace(/,/g, "").trim();
+  return Number(normalized);
 }
 
 function readText(id) {
@@ -500,10 +508,14 @@ function calculateBuildingPerformance(inputs) {
 
 
   /* ---------- ENERGY ---------- */
-  const energyAnnualKWh = toAnnualEnergyKWh(energyKWh, energyPeriod);
+  const energyAnnualKWh = Number.isFinite(energyKWh) && energyKWh > 0
+    ? toAnnualEnergyKWh(energyKWh, energyPeriod)
+    : NaN;
 
   /* ---------- AREA ---------- */
-  const areaSqft = areaSqm / 0.092903;
+  const areaSqft = Number.isFinite(areaSqm) && areaSqm > 0
+    ? areaSqm / 0.092903
+    : NaN;
 
   /* ---------- CLIMATE ---------- */
  const climateZone =
@@ -514,11 +526,17 @@ function calculateBuildingPerformance(inputs) {
   const buildingSize = getBuildingSize(areaSqm);
 
   /* ---------- EPI ---------- */
-  const epi = energyAnnualKWh / areaSqm;
+  const epi = Number.isFinite(energyAnnualKWh) &&
+    energyAnnualKWh > 0 &&
+    Number.isFinite(areaSqm) &&
+    areaSqm > 0
+      ? energyAnnualKWh / areaSqm
+      : NaN;
 
   /* ---------- ASSURE EPI ---------- */
-  const assureStatus =
-    epi <= ASSURE_EPI_TARGET
+  const assureStatus = !Number.isFinite(epi)
+    ? { text: MISSING_RESULT_TEXT, class: "rating-fair" }
+    : epi <= ASSURE_EPI_TARGET
       ? { text: "Within target", class: "metric-good" }
       : { text: "Above target", class: "metric-bad" };
 
@@ -838,26 +856,69 @@ function updateEpiBar({ epi, thresholds, assure, coldClimate = false }) {
      ❄️ COLD CLIMATE MODE
      =============================== */
   if (coldClimate) {
-    fill.style.width = "100%";
-    fill.style.background = "#dcdcdc";
+    if (isNaN(epi)) {
+      if (starScale) starScale.style.display = "none";
+      fill.style.width = "0%";
+      fill.style.background = "#dcdcdc";
+      if (buildingMarker) buildingMarker.style.display = "none";
+      if (buildingLabel) buildingLabel.style.display = "none";
+      if (assureMarker) assureMarker.style.left = "75%";
+      if (assureLabel) assureLabel.style.left = "75%";
+      msg.innerHTML = `
+        <b>BEE star benchmarking is not available for cold climate zones.</b><br>
+        EPI comparison with ASSURE KPI needs valid energy and area inputs.
+      `;
+      return;
+    }
 
-    buildingLabel.style.left = "50%";
-    buildingText.textContent = Math.round(epi);
+    const AXIS_MAX = Math.max(assure * 1.4, epi * 1.15, assure + 25);
+    const pct = v => (Math.max(0, Math.min(v, AXIS_MAX)) / AXIS_MAX) * 100;
+    const buildingPct = pct(epi);
+    const assurePct = pct(assure);
 
-    // Hide ASSURE benchmark
-    if (assureMarker) assureMarker.style.display = "none";
-    if (assureLabel) assureLabel.style.display = "none";
-
-    // Hide stars
-    if (starScale) starScale.style.display = "none";
-
-    msg.innerHTML = `
-      <b>EPI benchmarking not available.</b><br>
-      Comparison with ASSURE KPI (75 kWh/m²/yr) cannot be provided
-      due to missing BEE star benchmark equations for cold climate zones.
+    fill.style.width = `${buildingPct}%`;
+    fill.style.background = epi <= assure ? "#2ecc71" : `
+      linear-gradient(
+        to right,
+        #2ecc71 0%,
+        #2ecc71 ${assurePct}%,
+        #27ae60 ${assurePct}%,
+        #27ae60 100%
+      )
     `;
 
-    return; // ⛔ stop here intentionally
+    buildingMarker.style.left = `calc(${buildingPct}% - 2px)`;
+    buildingLabel.style.left = `${buildingPct}%`;
+    assureMarker.style.left = `calc(${assurePct}% - 2px)`;
+    assureLabel.style.left = `${assurePct}%`;
+    buildingText.textContent = formatEpiLabel(epi);
+
+    if (starScale) starScale.style.display = "none";
+
+    const dist = Math.abs(buildingPct - assurePct);
+    if (dist < 8) {
+      buildingLabel.style.top = "-78px";
+      assureLabel.style.top = "-38px";
+    } else {
+      buildingLabel.style.top = "-58px";
+      assureLabel.style.top = "-58px";
+    }
+
+    clampFloatingElement(buildingLabel, bar, buildingPct);
+    clampFloatingElement(assureLabel, bar, assurePct);
+
+    const delta = Math.round(Math.abs(epi - assure));
+    const status = epi <= assure
+      ? `Within ASSURE KPI by ${delta} kWh/m²/yr.`
+      : `${delta} kWh/m²/yr above ASSURE KPI (75 kWh/m²/yr).`;
+
+    msg.innerHTML = `
+      <b>BEE star benchmarking is not available for cold climate zones.</b><br>
+      EPI comparison with ASSURE KPI is available: ${status}
+    `;
+
+    return;
+
   }
 
   /* ===============================
@@ -938,7 +999,7 @@ function updateEpiBar({ epi, thresholds, assure, coldClimate = false }) {
   assureMarker.style.left = `calc(${assurePct}% - 2px)`;
   assureLabel.style.left = `${assurePct}%`;
 
-  buildingText.textContent = Math.round(epi);
+  buildingText.textContent = formatEpiLabel(epi);
   clampFloatingElement(buildingLabel, bar, buildingPct);
   clampFloatingElement(assureLabel, bar, assurePct);
 
@@ -1316,7 +1377,7 @@ function renderDgSizingVisual(dgWsf) {
     root.innerHTML = `
       <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/dg-set-sizing.png" alt="DG Set Sizing">
-        <span class="dg-title section-title">Backup Power Density </span>
+        <span class="dg-title section-title">Backup Power Density</span>
         ${buildOutputHelp("Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.")}
       </div>
       <div class="rating-fair">Result not available due to missing input(s).</div>
@@ -1346,7 +1407,7 @@ function renderDgSizingVisual(dgWsf) {
   root.innerHTML = `
     <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/dg-set-sizing.png" alt="DG Set Sizing">
-        <span class="dg-title section-title">Backup Power Density </span>
+        <span class="dg-title section-title">Backup Power Density</span>
         ${buildOutputHelp("Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.")}
       </div>
 
@@ -1417,7 +1478,7 @@ function renderContractSizingVisual(cdWsf) {
       <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/contract-demand.png" alt="Contract Demand">
         <span class="dg-title section-title">Contract Demand Density</span>
-        ${buildOutputHelp("Contract Demand is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties.")}
+        ${buildOutputHelp("Contract Demand Density is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties. ")}
       </div>
 
       <div class="dg-visual">
@@ -1596,10 +1657,6 @@ function renderResults(r) {
                     <span class="water-actual-unit">lpcd</span>
                   </div>
 
-                  <div class="water-status-chip ${r.lpcd <= TARGET ? "is-good" : "is-alert"}">
-                    ${r.lpcd <= TARGET ? "Within NBC limit 45" : "Above NBC limit 45"}
-                  </div>
-
                 </div>
 
                 <div class="water-limit-overlay" aria-hidden="true">
@@ -1609,6 +1666,11 @@ function renderResults(r) {
                   </div>
                 </div>
 
+              </div>
+              <div class="water-efficiency-message ${r.lpcd <= TARGET ? "is-good" : "is-alert"}">
+                ${r.lpcd <= TARGET
+                  ? "Water use is within the recommended limit—efficient performance."
+                  : "Water use exceeds the recommended limit—consider reducing consumption."}
               </div>
             </div>
           </div>
