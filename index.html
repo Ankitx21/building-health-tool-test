@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Building Health Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <h1>Building Health Tool</h1>
+      <p>For best results, we recommend completing all fields in the form. Please note that the project data you share is used solely to generate your assessment, and not stored or disseminated for any other purposes.</p>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="main-grid" id="mainGrid">
+
+      <!-- LEFT : INPUTS -->
+      <section class="card input-card" id="inputCard">
+
+        <label class="field-label">Building Type
+          <span class="input-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">At present, this tool is available only for offices.</span>
+          </span>
+        </label>
+        <select id="buildingType">
+          <option>Office</option>
+        </select>
+
+        <!--state and cities of India-->
+
+        <div class="inline">
+          <div class="field">
+            <label for="state" class="field-label">State</label>
+            <select id="state">
+              <option value="">Select State</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="city" class="field-label">City</label>
+            <select id="city" disabled>
+              <option value="">Select City</option>
+            </select>
+          </div>
+        </div>
+
+
+
+        <!-- BUILT-UP + AC AREA (SIDE BY SIDE) -->
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label class="field-label">
+              Built-up Area (m²)
+              <span class="input-help">
+                <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+                <span class="input-help-tooltip">Total area of the building, excluding covered parking.</span>
+              </span>
+            </label>
+            <input type="number" id="area" placeholder="e.g. 10,000">
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">Percentage of Air Conditioned Area (%)
+              <span class="input-help">
+                <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+                <span class="input-help-tooltip">Percentage of the built-up area that is air-conditioned.</span>
+              </span>
+            </label>
+            <input type="number" id="acArea" placeholder="e.g. 80">
+          </div>
+        </div>
+
+        <!-- TOTAL OCCUPANTS (FULL WIDTH) -->
+        <div class="form-group">
+          <label class="field-label">Total Number of Occupants
+            <span class="input-help">
+              <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+              <span class="input-help-tooltip">Total number of people occupying the building on a typical day.</span>
+            </span>
+          </label>
+          <input type="number" id="occupants" placeholder="e.g. 1000">
+        </div>
+
+
+
+        <!-- ENERGY -->
+        <!-- <h2>Energy Performance</h2> -->
+
+        <label class="field-label">Electricity Consumption
+          <span class="input-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">Total electricity used by the building. You can find this on your electricity bills.</span>
+          </span>
+        </label>
+        <div class="inline">
+          <input type="number" id="energy" placeholder="e.g. 2,50,000">
+          <select id="energyPeriod">
+            <option value="monthly">Monthly Average (kWh)</option>
+            <option value="annual">Annual (kWh)</option>           
+          </select>
+        </div>
+
+        <label class="field-label">Installed AC Capacity (TR)
+          <span class="input-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">Total installed cooling capacity of all air-conditioning systems.</span>
+          </span>
+        </label>
+        <input type="number" id="acCapacity" placeholder="e.g. 250">
+
+        <!-- CONTRACT DEMAND + DG SET (SIDE BY SIDE) -->
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label class="field-label">Contract Demand (kVA)
+              <span class="input-help">
+                <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+                <span class="input-help-tooltip">Maximum electrical load agreed with the utility, usually listed on the electricity bill.</span>
+              </span>
+            </label>
+            <input
+              type="number"
+              id="contractDemand"
+              placeholder="e.g. 115"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">DG Set Size (kVA)
+              <span class="input-help">
+                <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+                <span class="input-help-tooltip">Total backup generator capacity installed in the building.</span>
+              </span>
+            </label>
+            <input
+              type="number"
+              id="dgSize"
+              placeholder="e.g. 10"
+            >
+          </div>
+        </div>
+
+
+        <label id="renewableLabel" class="field-label">
+          Renewable Energy Generation
+          <span class="input-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">Total energy generated from renewable sources such as solar panels, entered as either a monthly average or annual total.</span>
+          </span>
+        </label>
+
+        <div class="inline">
+          <input
+            type="number"
+            id="renewableValue"
+            placeholder="e.g. 0"
+          />
+          <select id="renewablePeriod">
+            <option value="monthly">Monthly Average (kWh)</option>
+            <option value="annual" selected>Annual (kWh)</option>
+          </select>
+        </div>
+
+        <label class="field-label">
+          Water Consumption 
+          <span class="input-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">Total water used by the building from all sources, entered as a monthly average, annual total, or average working day total.</span>
+          </span>
+        </label>
+
+        <div class="inline">
+          <input
+            type="number"
+            id="water"
+            placeholder="e.g. 10,000"
+          />
+          <select id="waterPeriod">
+            <option value="monthly">Monthly Average (kilolitres)</option>
+            <option value="annual" selected>Annual (kilolitres)</option>
+            <option value="daily">Daily (kilolitres)</option>
+          </select>
+        </div>
+
+        <div class="action-stack">
+          <button id="assessBtn">Assess My Building</button>
+          <button id="resetBtn" type="button" class="button-secondary">Assess Another Project</button>
+        </div>
+      </section>
+
+      <!-- RIGHT : RESULTS -->
+<section class="card results-panel hidden" id="results">
+
+
+      <!-- ================= SUMMARY ================= -->
+      <div class="result-block results-content">
+        <div class="bee-rating-block">
+          <div class="bee-rating-title">
+            <div class="section-heading">
+              <img class="section-icon" src="buildinge_health_tool_asset/bee-star.png" alt="BEE Star">
+              <span class="section-title">BEE Star Rating :</span>
+              <span class="input-help output-help">
+                <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+                <span class="input-help-tooltip">BEE (Bureau of Energy Efficiency) label that rates a building's energy efficiency from 1 to 5 stars with higher stars indicating better performance.</span>
+              </span>
+            </div>
+          </div>
+
+          <div id="outStarRating" class="bee-rating-value">
+            —
+          </div>
+        </div>
+      <!-- </div> -->
+
+
+        <!-- epi progress bar -->
+
+        <!-- ================= EPI PROGRESS BAR ================= -->
+
+      <div class="epi-card">
+        <div class="epi-title-row section-heading">
+          <img class="section-icon" src="buildinge_health_tool_asset/net_energy.png" alt="Energy Performance">
+          <strong class="section-title">Energy Performance Index (EPI)</strong>
+
+          <span class="input-help output-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            ⓘ
+            <span class="input-help-tooltip">
+              The annual energy a building uses per square meter (kWh/m²/year), indicating its overall energy efficiency. Lower values mean better performance.
+            </span>
+          </span>
+        </div>
+
+
+        <div class="epi-bar-wrapper">
+
+          <!-- LABELS ON TOP -->
+          <div class="epi-label assure-label" id="assureLabel">
+            ASSURE KPI<br>
+            <b> 75 kWh/m²/yr</b>
+          </div>
+
+          <div class="epi-label building-label" id="buildingLabel">
+            Your Building's EPI<br>
+            <b><span id="buildingEpiText">—</span> kWh/m²/yr</b>
+          </div>
+
+          <!-- SCALE (BAR + STARS SHARE SAME WIDTH) -->
+        <div class="epi-scale">
+
+          <!-- BAR -->
+          <div class="epi-bar">
+            <div class="epi-fill"></div>
+            <div class="epi-marker assure-marker"></div>
+            <div class="epi-marker building-marker"></div>
+          </div>
+
+          <!-- STAR SCALE (ticks + stars together) -->
+            <div class="epi-star-scale" id="epiStarScale">
+
+              <div class="epi-star-group" data-star="5">
+                <div class="star-tick"></div>
+                <div class="star-icon">★</div>
+                <div class="star-num">5</div>
+              </div>
+
+              <div class="epi-star-group" data-star="4">
+                <div class="star-tick"></div>
+                <div class="star-icon">★</div>
+                <div class="star-num">4</div>
+              </div>
+
+              <div class="epi-star-group" data-star="3">
+                <div class="star-tick"></div>
+                <div class="star-icon">★</div>
+                <div class="star-num">3</div>
+              </div>
+
+              <div class="epi-star-group" data-star="2">
+                <div class="star-tick"></div>
+                <div class="star-icon">★</div>
+                <div class="star-num">2</div>
+              </div>
+
+              <div class="epi-star-group" data-star="1">
+                <div class="star-tick"></div>
+                <div class="star-icon">★</div>
+                <div class="star-num">1</div>
+              </div>
+
+            </div>
+
+
+        </div>
+        </div>
+
+  <div class="epi-message" id="epiMessage"></div>
+</div>
+
+      <div class="net-energy-card">
+        <div class="net-energy-title section-heading">
+          <img class="section-icon" src="buildinge_health_tool_asset/net_energy.png" alt="Net Energy">
+          <span class="section-title">Net Energy Status</span>
+          <span class="input-help output-help">
+            <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+            <span class="input-help-tooltip">Net Energy Status shows whether your building produces enough energy to meet its needs. A positive status means you produce more than you consume.</span>
+          </span>
+        </div>
+
+        <div class="net-energy-bar">
+
+          <!-- Consumed (top bar) -->
+          <div class="net-energy-row consumed">
+            <div class="net-bar-fill net-energy-consumed"></div>
+            <div class="net-bar-text" id="conText">
+              Consumed – 0 kwh
+            </div>
+          </div>
+
+          <!-- Generated (bottom bar) -->
+          <div class="net-energy-row generated">
+            <div class="net-bar-fill net-energy-generated"></div>
+            <div class="net-bar-text" id="genText">
+              Generated – 0 kWh
+            </div>
+          </div>
+
+        </div>
+
+        <div class="net-energy-message" id="netEnergyMsg"></div>
+      </div>
+
+      <!-- ================= HVAC & ELECTRICAL ================= -->
+      <div class="results-subsection">
+
+        <div id="outHvac" class="hvac-card">
+
+          <div class="hvac-title section-heading">
+            <img class="section-icon" src="buildinge_health_tool_asset/hvac-sizing.png" alt="HVAC Sizing">
+            <span class="section-title">HVAC Sizing </span>
+            <span class="input-help output-help">
+              <img class="input-help-icon" src="buildinge_health_tool_asset/i_icon.png" alt="More info">
+              <span class="input-help-tooltip">HVAC Capacity Factor (sqft/TR) indicates the floor area cooled by a single ton of air conditioning. A higher value suggests a more efficient building that needs smaller cooling equipment.</span>
+            </span>
+          </div>
+
+          <div class="hvac-bar-wrapper">
+
+            <div class="hvac-building-label" id="hvacBuildingLabel">
+              Your Building's<br>
+              <b id="hvacBuildingValue">—</b>
+            </div>
+
+            <div class="hvac-marker building"></div>
+
+            <div class="hvac-bar">
+              <div class="hvac-fill"></div>
+
+
+              <div class="hvac-marker target">
+                <div class="target-dot"></div>
+              </div>
+            </div>
+
+            <!-- ✅ TARGET LABEL NOW HERE -->
+            <div class="hvac-target-label" id="hvacTargetLabel">
+              800 sqft/TR
+            </div>
+
+          </div>
+
+          <!-- Legends -->
+          <div class="hvac-legend">
+            <span class="lg blue">● More cooling provided than needed</span>
+            <span class="lg red">● Less cooling provided than needed</span>
+            <span class="lg green">● Right amount of cooling provided</span>
+          </div>
+
+        </div>
+        <div id="outContractSizing" class="dg-sizing-card"></div>
+        <div id="outDgSizing" class="dg-sizing-card"></div>
+
+      </div>
+
+
+      <!-- ================= WATER ================= -->
+      <div class="results-subsection">
+        <!-- <h3>Water</h3> -->
+
+          <div id="outWater">
+            <div class="water-container">
+
+              <div class="water-cylinder-wrapper">
+                <div class="water-cylinder">
+                  <div class="water-fill" id="fill"></div>
+                  <div class="water-limit-line" id="limitLine"></div>
+                  <div class="water-badge" id="badge"></div>
+                </div>
+
+                <div class="water-scale" id="Scale"></div>
+              </div>
+
+            </div>
+          </div>
+
+      </div>
+
+      <div class="results-actions">
+        <button id="downloadReportBtn" type="button" class="button-secondary">Download Report</button>
+      </div>
+
+    </section>
+
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
