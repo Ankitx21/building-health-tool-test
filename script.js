@@ -200,8 +200,8 @@ function downloadReport() {
         <div class="item"><span class="label">Energy Performance Index</span><div class="value">${formatMetricValue(latestResults.epi)} kWh/m²/yr</div><div class="note">${getElementText("epiMessage")}</div></div>
         <div class="item"><span class="label">Net Energy Status</span><div class="value">${latestResults.netEnergy > 0 ? "Net Positive" : latestResults.netEnergy < 0 ? "Net Negative" : "Net Zero"}</div><div class="note">${getElementText("netEnergyMsg")}</div></div>
         <div class="item"><span class="label">HVAC Sizing</span><div class="value">${latestResults.hvacSizing.value || MISSING_RESULT_TEXT}</div><div class="note">${latestResults.hvacSizing.status || ""}</div></div>
-        <div class="item"><span class="label">Contract Demand</span><div class="value">${latestResults.demandSizing.contract || "Not provided"}</div><div class="note">${latestResults.demandSizing.contractStatus || ""}</div></div>
-        <div class="item"><span class="label">DG Set Sizing</span><div class="value">${latestResults.demandSizing.dg || "Not provided"}</div><div class="note">${latestResults.demandSizing.dgStatus || ""}</div></div>
+        <div class="item"><span class="label">Contract Demand Density</span><div class="value">${latestResults.demandSizing.contract || "Not provided"}</div><div class="note">${latestResults.demandSizing.contractStatus || ""}</div></div>
+        <div class="item"><span class="label">Backup Power Density</span><div class="value">${latestResults.demandSizing.dg || "Not provided"}</div><div class="note">${latestResults.demandSizing.dgStatus || ""}</div></div>
         <div class="item"><span class="label">Water Efficiency</span><div class="value">${Number.isFinite(latestResults.lpcd) ? `${latestResults.lpcd.toFixed(1)} lpcd` : MISSING_RESULT_TEXT}</div><div class="note">${latestResults.waterStatus.text || ""}</div></div>
       </div>
     </div>
@@ -1316,7 +1316,7 @@ function renderDgSizingVisual(dgWsf) {
     root.innerHTML = `
       <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/dg-set-sizing.png" alt="DG Set Sizing">
-        <span class="dg-title section-title">DG set sizing </span>
+        <span class="dg-title section-title">Backup Power Density </span>
         ${buildOutputHelp("Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.")}
       </div>
       <div class="rating-fair">Result not available due to missing input(s).</div>
@@ -1346,7 +1346,7 @@ function renderDgSizingVisual(dgWsf) {
   root.innerHTML = `
     <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/dg-set-sizing.png" alt="DG Set Sizing">
-        <span class="dg-title section-title">DG set sizing </span>
+        <span class="dg-title section-title">Backup Power Density </span>
         ${buildOutputHelp("Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.")}
       </div>
 
@@ -1385,7 +1385,7 @@ function renderContractSizingVisual(cdWsf) {
     root.innerHTML = `
       <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/contract-demand.png" alt="Contract Demand">
-        <span class="dg-title section-title">Contract Demand</span>
+        <span class="dg-title section-title">Contract Demand Density</span>
         ${buildOutputHelp("Contract Demand is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties.")}
       </div>
       <div class="rating-fair">Result not available due to missing input(s).</div>
@@ -1416,7 +1416,7 @@ function renderContractSizingVisual(cdWsf) {
     <div class="contract-theme">
       <div class="dg-head section-heading">
         <img class="section-icon" src="buildinge_health_tool_asset/contract-demand.png" alt="Contract Demand">
-        <span class="dg-title section-title">Contract Demand</span>
+        <span class="dg-title section-title">Contract Demand Density</span>
         ${buildOutputHelp("Contract Demand is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties.")}
       </div>
 
