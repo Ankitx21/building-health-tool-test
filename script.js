@@ -60,7 +60,7 @@ function resetAssessmentForm() {
 
   if (buildingType) buildingType.selectedIndex = 0;
   if (state) state.value = "";
-  if (energyPeriod) energyPeriod.value = "monthly";
+  if (energyPeriod) energyPeriod.value = "annual";
   if (renewablePeriod) renewablePeriod.value = "annual";
   if (waterPeriod) waterPeriod.value = "annual";
 
@@ -68,6 +68,39 @@ function resetAssessmentForm() {
     city.innerHTML = `<option value="">Select City</option>`;
     city.disabled = true;
   }
+
+  updateInputPlaceholders();
+}
+
+function updateInputPlaceholders() {
+  const placeholderByField = {
+    energy: {
+      annual: "e.g. 15,00,000",
+      monthly: "e.g. 1,25,000"
+    },
+    renewableValue: {
+      annual: "e.g. 0",
+      monthly: "e.g. 0"
+    },
+    water: {
+      annual: "e.g. 10,000",
+      monthly: "e.g. 800",
+      daily: "e.g. 25"
+    }
+  };
+
+  const bindings = [
+    ["energy", "energyPeriod"],
+    ["renewableValue", "renewablePeriod"],
+    ["water", "waterPeriod"]
+  ];
+
+  bindings.forEach(([inputId, selectId]) => {
+    const input = document.getElementById(inputId);
+    const select = document.getElementById(selectId);
+    const placeholder = placeholderByField[inputId]?.[select?.value];
+    if (input && placeholder) input.placeholder = placeholder;
+  });
 }
 
 function getElementText(id) {
@@ -415,6 +448,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const stateSelect = document.getElementById("state");
   const citySelect = document.getElementById("city");
+  ["energyPeriod", "renewablePeriod", "waterPeriod"].forEach(id => {
+    const select = document.getElementById(id);
+    if (select) select.addEventListener("change", updateInputPlaceholders);
+  });
+  updateInputPlaceholders();
 
   if (!stateSelect || !citySelect) {
     console.error("State or City select not found in DOM");
@@ -1139,7 +1177,7 @@ function updateHvacBar(sfPerTR) {
 
   /* ================= POSITIONING ================= */
   targetMarker.style.left = `${targetPct}%`;
-  targetLabel = document.getElementById("hvacTargetLabel");
+  const targetLabel = document.getElementById("hvacTargetLabel");
   targetLabel.style.left = `${targetPct}%`;
 
 
@@ -1148,7 +1186,10 @@ function updateHvacBar(sfPerTR) {
   buildingLabel.style.setProperty("--bubble-stem-left", "50%");
 
   if (targetLabel) {
-    targetLabel.textContent = `ASSURE KPI 800 sqft/TR`;
+    targetLabel.innerHTML = `
+      <span>ASSURE KPI</span>
+      <b>800 sqft/TR</b>
+    `;
   }
 
   /* ================= STRICT COLOR LOGIC ================= */
@@ -1369,6 +1410,12 @@ function getSizingScalePct(value, dotCount) {
   return (clampedValue / dotCount) * 100;
 }
 
+function getSizingMarkerPct(value, dotCount) {
+  const clampedValue = Math.max(0, Math.min(value, dotCount));
+  if (clampedValue <= 0) return 0;
+  return ((clampedValue - 0.5) / dotCount) * 100;
+}
+
 function renderDgSizingVisual(dgWsf) {
   const root = document.getElementById("outDgSizing");
   if (!root) return;
@@ -1394,7 +1441,7 @@ function renderDgSizingVisual(dgWsf) {
 
   const scaledValue = clamp(dgWsf, 0, AXIS_MAX);
   const valuePct = getSizingScalePct(scaledValue, DOT_COUNT);
-  const targetPct = getSizingScalePct(TARGET, DOT_COUNT);
+  const targetPct = getSizingMarkerPct(TARGET, DOT_COUNT);
 
   const bubblePct = clamp(valuePct, 0, 100);
   const good = dgWsf <= TARGET;
@@ -1413,8 +1460,8 @@ function renderDgSizingVisual(dgWsf) {
 
     <div class="dg-visual">
       <div class="dg-bubble ${bubbleClass}" style="left:${bubblePct}%; --dg-line:${lineColor};">
-        <span class="s1">${bubbleMsg}</span>
-        <span class="s2">Your Building ${dgWsf.toFixed(1)} W/sqft</span>
+        <span>Your Building's</span>
+        <b>${dgWsf.toFixed(1)} W/sqft</b>
       </div>
 
       <div class="dg-scale">
@@ -1423,7 +1470,8 @@ function renderDgSizingVisual(dgWsf) {
       </div>
 
       <div class="dg-target-label" style="left:${targetPct}%;">
-        ASSURE Target &lt; 5 W/sqft
+        <span>ASSURE KPI</span>
+        <b>&lt; 5 W/sqft</b>
       </div>
     </div>
   `;
@@ -1462,7 +1510,7 @@ function renderContractSizingVisual(cdWsf) {
 
   const scaledValue = clamp(cdWsf, 0, AXIS_MAX);
   const valuePct = getSizingScalePct(scaledValue, DOT_COUNT);
-  const targetPct = getSizingScalePct(TARGET, DOT_COUNT);
+  const targetPct = getSizingMarkerPct(TARGET, DOT_COUNT);
 
   const bubblePct = clamp(valuePct, 0, 100);
 
@@ -1483,8 +1531,8 @@ function renderContractSizingVisual(cdWsf) {
 
       <div class="dg-visual">
         <div class="dg-bubble ${bubbleClass}" style="left:${bubblePct}%; --dg-line:${lineColor};">
-          <span class="s1">${bubbleMsg}</span>
-          <span class="s2">Your Building ${cdWsf.toFixed(1)} W/sqft</span>
+          <span>Your Building's</span>
+          <b>${cdWsf.toFixed(1)} W/sqft</b>
         </div>
 
       <div class="dg-scale">
@@ -1493,7 +1541,8 @@ function renderContractSizingVisual(cdWsf) {
       </div>
 
         <div class="dg-target-label" style="left:${targetPct}%;">
-          ASSURE KPI &lt; 5 W/sqft
+          <span>ASSURE KPI</span>
+          <b>&lt; 5 W/sqft</b>
         </div>
       </div>
     </div>
