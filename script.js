@@ -426,8 +426,30 @@ function toAnnualWaterKL(value, period) {
   if (!Number.isFinite(value) || value <= 0) return NaN;
 
   if (period === "monthly") return value * 12;
-  if (period === "daily") return value * 220;
+  if (period === "daily") return value * 210;
   return value;
+}
+
+function calculateLpcd(value, period, occupants) {
+  if (!Number.isFinite(value) || value <= 0 || !Number.isFinite(occupants) || occupants <= 0) {
+    return NaN;
+  }
+
+  if (period === "monthly") return (value * 1000) / (occupants * 18);
+  if (period === "daily") return (value * 1000) / occupants;
+  return (value * 1000) / (occupants * 210);
+}
+
+function getWaterFormulaHtml(period) {
+  if (period === "monthly") {
+    return `<span>LPCD = Monthly average water consumption (kL) &times; 1000 &divide; [Total occupants &times; 18 days]</span>`;
+  }
+
+  if (period === "daily") {
+    return `<span>LPCD = Daily water consumption (kL) &times; 1000 &divide; Total occupants</span>`;
+  }
+
+  return `<span>LPCD = Annual water consumption (kL) &times; 1000 &divide; [Total occupants &times; 210 days]</span>`;
 }
 
 function buildOutputHelp(text) {
@@ -780,16 +802,13 @@ let lpcd = NaN;
 const annualWaterKL = toAnnualWaterKL(waterKL, waterPeriod);
 
 if (
-  !isNaN(annualWaterKL) &&
-  annualWaterKL > 0 &&
+  !isNaN(waterKL) &&
+  waterKL > 0 &&
   !isNaN(occupants) &&
   occupants > 0
 ) {
   // Annual kL → litres
-  const annualLitres = annualWaterKL * 1000;
-
-  // LPCD calcurflation (220 working days)
-  lpcd = annualLitres / (occupants * 220);
+  lpcd = calculateLpcd(waterKL, waterPeriod, occupants);
 }
 
 console.log("WATER DEBUG:", {
@@ -856,6 +875,7 @@ if (!isNaN(lpcd)) {
     sfPerTR,
     demandSizing,
     waterStatus,
+    waterPeriod,
 
     lpcd
   };
@@ -1176,6 +1196,7 @@ function updateHvacBar(sfPerTR) {
   fill.style.width = `${buildingPct}%`;
 
   /* ================= POSITIONING ================= */
+  buildingMarker.style.left = `${buildingPct}%`;
   targetMarker.style.left = `${targetPct}%`;
   const targetLabel = document.getElementById("hvacTargetLabel");
   targetLabel.style.left = `${targetPct}%`;
@@ -1196,6 +1217,7 @@ function updateHvacBar(sfPerTR) {
   const TOLERANCE = 1; // allow ±1 sqft/TR
 
   let color;
+  const labelLineColor = "#111827";
 
   if (Math.abs(sfPerTR - TARGET) <= TOLERANCE) {
     color = "#2ecc71"; // GREEN (exact / acceptable)
@@ -1210,16 +1232,14 @@ function updateHvacBar(sfPerTR) {
   /* ================= APPLY COLORS ================= */
   fill.style.background = color;
 
-  // Change building marker circle color
-  buildingMarker.style.setProperty("--marker-color", color);
+  // Change building marker line color
+  buildingMarker.style.setProperty("--marker-color", labelLineColor);
 
-  // Change floating label box
-  buildingLabel.style.background = color;
-  buildingLabel.style.borderColor = color;
-  buildingLabel.style.setProperty("--marker-color", color);
+  // Keep the label as a white note and only change the accent/stem color.
+  buildingLabel.style.setProperty("--marker-color", labelLineColor);
 
   // Change text color
-  buildingValue.style.color = "#ffffff";
+  buildingValue.style.color = "#111827";
 }
 
 // ############################ WATER CYLINDER ##################################
@@ -1416,6 +1436,67 @@ function getSizingMarkerPct(value, dotCount) {
   return ((clampedValue - 0.5) / dotCount) * 100;
 }
 
+function getSizingBarPct(value, axisMax) {
+  const clampedValue = Math.max(0, Math.min(value, axisMax));
+  return (clampedValue / axisMax) * 100;
+}
+
+function renderDensitySizingBar({
+  root,
+  themeClass = "",
+  iconSrc,
+  iconAlt,
+  title,
+  helpText,
+  value,
+  valueUnit,
+  target,
+  targetText
+}) {
+  const axisMax = Math.max(value, target);
+  const valuePct = getSizingBarPct(value, axisMax);
+  const targetPct = getSizingBarPct(target, axisMax);
+  const targetVisualPct = Math.min(targetPct, 96);
+  const good = value <= target;
+  const fillColor = good ? "#2ecc71" : "#e74c3c";
+  const buildingLineColor = good ? "#111827" : "#111827";
+
+  root.innerHTML = `
+    <div class="${themeClass}">
+      <div class="dg-head section-heading">
+        <img class="section-icon" src="${iconSrc}" alt="${iconAlt}">
+        <span class="dg-title section-title">${title}</span>
+        ${buildOutputHelp(helpText)}
+      </div>
+
+      <div class="dg-visual dg-bar-visual">
+        <div class="dg-bubble ${good ? "dg-good" : "dg-bad"}" style="left:${valuePct}%; --dg-line:${buildingLineColor};">
+          <span>Your Building</span>
+          <b>${value.toFixed(1)} ${valueUnit}</b>
+        </div>
+
+        <div class="dg-bar">
+          <div class="dg-fill" style="width:${valuePct}%; background:${fillColor};"></div>
+          <div class="dg-building-marker" style="left:calc(${valuePct}% - 2px); --dg-line:${buildingLineColor};"></div>
+          <div class="dg-target-marker" style="left:calc(${targetVisualPct}% - 2px);"></div>
+        </div>
+
+        <div class="dg-target-label" style="left:${targetVisualPct}%;">
+          <span>ASSURE KPI</span>
+          <b>${targetText}</b>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const bubble = root.querySelector(".dg-bubble");
+  const frame = root.querySelector(".dg-visual");
+  const bar = root.querySelector(".dg-bar");
+  const targetLabel = root.querySelector(".dg-target-label");
+  positionBubbleInFrame(bubble, frame, bar, valuePct, 8);
+  positionBubbleInFrame(targetLabel, frame, bar, targetVisualPct, 8);
+}
+
 function renderDgSizingVisual(dgWsf) {
   const root = document.getElementById("outDgSizing");
   if (!root) return;
@@ -1433,55 +1514,17 @@ function renderDgSizingVisual(dgWsf) {
   }
 
   const TARGET = 5;
-  const DOT_COUNT = 13;
-
-  const AXIS_MAX = DOT_COUNT; // each circle = 1 W/sqft
-
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-
-  const scaledValue = clamp(dgWsf, 0, AXIS_MAX);
-  const valuePct = getSizingScalePct(scaledValue, DOT_COUNT);
-  const targetPct = getSizingMarkerPct(TARGET, DOT_COUNT);
-
-  const bubblePct = clamp(valuePct, 0, 100);
-  const good = dgWsf <= TARGET;
-  const bubbleClass = good ? "dg-good" : "dg-bad";
-  const bubbleMsg = good ? "Right amount of backup power" : "More backup power than needed";
-  const lineColor = good ? "#25c46b" : "#ff4e63";
-
-  const dotsHtml = buildSizingDots(scaledValue, DOT_COUNT, "#f79a1f", "#f5b13c");
-
-  root.innerHTML = `
-    <div class="dg-head section-heading">
-        <img class="section-icon" src="buildinge_health_tool_asset/dg-set-sizing.png" alt="DG Set Sizing">
-        <span class="dg-title section-title">Backup Power Density</span>
-        ${buildOutputHelp("Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.")}
-      </div>
-
-    <div class="dg-visual">
-      <div class="dg-bubble ${bubbleClass}" style="left:${bubblePct}%; --dg-line:${lineColor};">
-        <span>Your Building's</span>
-        <b>${dgWsf.toFixed(1)} W/sqft</b>
-      </div>
-
-      <div class="dg-scale">
-        <div class="dg-dots">${dotsHtml}</div>
-        <div class="dg-target-marker" style="left:${targetPct}%;"></div>
-      </div>
-
-      <div class="dg-target-label" style="left:${targetPct}%;">
-        <span>ASSURE KPI</span>
-        <b>&lt; 5 W/sqft</b>
-      </div>
-    </div>
-  `;
-
-  const bubble = root.querySelector(".dg-bubble");
-  const frame = root.querySelector(".dg-visual");
-  const scale = root.querySelector(".dg-scale");
-  const targetLabel = root.querySelector(".dg-target-label");
-  positionBubbleInFrame(bubble, frame, scale, bubblePct, 8);
-  targetLabel.style.left = `${targetPct}%`;
+  renderDensitySizingBar({
+    root,
+    iconSrc: "buildinge_health_tool_asset/dg-set-sizing.png",
+    iconAlt: "DG Set Sizing",
+    title: "Backup Power Density",
+    helpText: "Backup Power Density is the electrical power consumption per floor area that can be supported by the DG system. Lower value indicates a lean backup system that prioritises only the essentials while a higher value indicates redundancy.",
+    value: dgWsf,
+    valueUnit: "W/sqft",
+    target: TARGET,
+    targetText: "&lt; 5 W/sqft"
+  });
 }
 
 // ///////////////////Contract demand//////////////////////////
@@ -1503,57 +1546,18 @@ function renderContractSizingVisual(cdWsf) {
   }
 
   const TARGET = 5;
-  const DOT_COUNT = 13;
-  const AXIS_MAX = DOT_COUNT; // each circle = 1 W/sqft
-
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-
-  const scaledValue = clamp(cdWsf, 0, AXIS_MAX);
-  const valuePct = getSizingScalePct(scaledValue, DOT_COUNT);
-  const targetPct = getSizingMarkerPct(TARGET, DOT_COUNT);
-
-  const bubblePct = clamp(valuePct, 0, 100);
-
-  const good = cdWsf <= TARGET;
-  const bubbleClass = good ? "dg-good" : "dg-bad";
-  const bubbleMsg = good ? "Right-sized power capacity" : "More power capacity than needed";
-  const lineColor = good ? "#b58cf5" : "#ff4e63";
-
-  const dotsHtml = buildSizingDots(scaledValue, DOT_COUNT, "#9b6be8", "#b58cf5");
-
-  root.innerHTML = `
-    <div class="contract-theme">
-      <div class="dg-head section-heading">
-        <img class="section-icon" src="buildinge_health_tool_asset/contract-demand.png" alt="Contract Demand">
-        <span class="dg-title section-title">Contract Demand Density</span>
-        ${buildOutputHelp("Contract Demand Density is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties. ")}
-      </div>
-
-      <div class="dg-visual">
-        <div class="dg-bubble ${bubbleClass}" style="left:${bubblePct}%; --dg-line:${lineColor};">
-          <span>Your Building's</span>
-          <b>${cdWsf.toFixed(1)} W/sqft</b>
-        </div>
-
-      <div class="dg-scale">
-        <div class="dg-dots">${dotsHtml}</div>
-        <div class="dg-target-marker" style="left:${targetPct}%;"></div>
-      </div>
-
-        <div class="dg-target-label" style="left:${targetPct}%;">
-          <span>ASSURE KPI</span>
-          <b>&lt; 5 W/sqft</b>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const bubble = root.querySelector(".dg-bubble");
-  const frame = root.querySelector(".dg-visual");
-  const scale = root.querySelector(".dg-scale");
-  const targetLabel = root.querySelector(".dg-target-label");
-  positionBubbleInFrame(bubble, frame, scale, bubblePct, 8);
-  targetLabel.style.left = `${targetPct}%`;
+  renderDensitySizingBar({
+    root,
+    themeClass: "contract-theme",
+    iconSrc: "buildinge_health_tool_asset/contract-demand.png",
+    iconAlt: "Contract Demand",
+    title: "Contract Demand Density",
+    helpText: "Contract Demand Density is the maximum power capacity agreed with the electric utility. If it is higher than your actual need, you are paying for unused capacity; if it is lower, it can lead to penalties. ",
+    value: cdWsf,
+    valueUnit: "W/sqft",
+    target: TARGET,
+    targetText: "&lt; 5 W/sqft"
+  });
 }
 
 /*************************************************
@@ -1676,6 +1680,8 @@ function renderResults(r) {
           "></div>
         `;
 
+      const waterFormula = getWaterFormulaHtml(r.waterPeriod);
+
       waterContainer.innerHTML = `
         <div class="water-card">
 
@@ -1727,6 +1733,8 @@ function renderResults(r) {
       `;
 
   } else {
+
+    const waterFormula = getWaterFormulaHtml(r.waterPeriod);
 
     waterContainer.innerHTML = `
       <div class="water-card">
