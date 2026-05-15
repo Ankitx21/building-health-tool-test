@@ -5,25 +5,20 @@
 
 :root {
   --viz-width: 560px;
-  --page-bg: #eeeeee;
-  --surface-main: #f8fafc;
-  --surface-soft: #ffffff;
-  --surface-elevated: #f1f5f9;
-  --text-main: #172033;
-  --text-muted: #5d667a;
-  --text-soft: #344256;
-  --accent: #5f8f2b;
-  --accent-hover: #4d7820;
-  --accent-muted: rgba(95, 143, 43, 0.12);
-  --border-soft: #d7dde6;
-  --border-strong: #c4ccd8;
+  --surface-main: #2b3b73;
+  --surface-soft: #223162;
+  --surface-elevated: #223463;
+  --accent: #7fb239;
+  --accent-hover: #6aa32f;
+  --accent-muted: rgba(127, 178, 57, 0.14);
+  --border-soft: rgba(229, 231, 235, 0.12);
   --motion-smooth: 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 body {
   margin: 0;
-  background: var(--page-bg);
-  color: var(--text-main);
+  background: #1f2f5c;
+  color: #e5e7eb;
 }
 
 .app-container {
@@ -59,7 +54,7 @@ body {
   border-radius: 12px;
   padding: 20px;
   border: 1px solid var(--border-soft);
-  box-shadow: 0 18px 36px rgba(32, 40, 54, 0.12);
+  box-shadow: 0 18px 40px rgba(8, 16, 40, 0.18);
 }
 
 .input-card {
@@ -79,7 +74,7 @@ body {
 
 h2 {
   margin-top: 0;
-  border-bottom: 1px solid var(--border-strong);
+  border-bottom: 1px solid #3f4f8c;
   padding-bottom: 6px;
 }
 
@@ -94,14 +89,8 @@ input, select {
   width: 100%;
   padding: 10px;
   border-radius: 6px;
-  border: 1px solid var(--border-strong);
+  border: none;
   margin-top: 0;
-  background: #ffffff;
-  color: var(--text-main);
-}
-
-input::placeholder {
-  color: #7c8799;
 }
 
 .field label {
@@ -143,16 +132,16 @@ button:active {
 .button-secondary {
   margin-top: 12px;
   background: transparent;
-  color: #24415f;
-  border: 1px solid var(--border-strong);
+  color: #dce6ff;
+  border: 1px solid rgba(220, 230, 255, 0.28);
   box-shadow: none;
 }
 
 .button-secondary:hover {
   background: var(--accent-muted);
-  border-color: rgba(95, 143, 43, 0.42);
-  color: #1d3010;
-  box-shadow: 0 10px 22px rgba(32, 40, 54, 0.12);
+  border-color: rgba(127, 178, 57, 0.48);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(8, 16, 40, 0.2);
 }
 
 .action-stack,
@@ -166,19 +155,18 @@ button:active {
 }
 
 .result-block {
-  background: var(--surface-soft);
-  border: 1px solid var(--border-soft);
+  background: #223162;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 12px;
 }
 
 .good {
-  color: #16794b;
+  color: #6ee7b7;
 }
 
 .bad {
-  color: #b91c1c;
+  color: #f87171;
 }
 
 .hidden {
@@ -197,11 +185,11 @@ button:active {
 }
 
 .metric-good {
-  color: #16794b;
+  color: #6ee7b7;
 }
 
 .metric-bad {
-  color: #b91c1c;
+  color: #f87171;
 }
 
 /* KPI Row Layout */
@@ -234,7 +222,7 @@ button:active {
 .kpi-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #e5e7eb;
   flex-shrink: 0;
 }
 
@@ -242,7 +230,7 @@ button:active {
   display: block;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #9ca3af;
   margin-top: 2px;
 }
 
@@ -267,45 +255,45 @@ button:active {
 
 /* Status colors */
 .rating-excellent {
-  color: #15803d; /* green */
+  color: #2CBC33; /* green */
 }
 
 .rating-fair {
-  color: #a16207; /* amber */
+  color: #facc15; /* amber */
 }
 
 .rating-poor {
-  color: #b91c1c; /* red */
+  color: #ef4444; /* red */
 }
 
 /* ===== Net Energy Status (text-only) ===== */
 
 .text-positive {
-  color: #15803d; /* green */
+  color: #22c55e; /* green */
   font-weight: 600;
 }
 
 .text-neutral {
-  color: #a16207; /* amber */
+  color: #b45309; /* amber */
   font-weight: 600;
 }
 
 .text-negative {
-  color: #b91c1c; /* red */
+  color: #ef4444; /* red */
   font-weight: 600;
 }
 
 
 .badge-positive {
-  color: #15803d;
+  color: #22c55e;
 }
 
 .badge-neutral {
-  color: #a16207;
+  color: #F7B980;
 }
 
 .badge-negative {
-  color: #b91c1c;
+  color: #ef4444;
 }
 
 .badge {
@@ -445,7 +433,7 @@ button:active {
 
 .label-note {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: #E6E6E6;
   padding: 2px 1px;
   border-radius: 999px;
 }
@@ -485,7 +473,7 @@ button:active {
 
 .kpi-label {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: #9ca3af;
   margin-right: 6px;
 }
 
@@ -501,7 +489,7 @@ button:active {
 
 .kpi-note {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: #9ca3af;
 }
 
 
@@ -510,35 +498,35 @@ button:active {
 /* Contract & DG numeric value colors */
 .kpi-value {
   font-weight: 600;
-  color: var(--text-main); /* default text */
+  color: #e5e7eb; /* default text */
 }
 
 /* When efficient */
 .rating-excellent .kpi-value {
-  color: #15803d; /* green */
+  color: #2CBC33; /* green */
 }
 
 /* When fair */
 .rating-fair .kpi-value {
-  color: #a16207; /* amber */
+  color: #facc15; /* amber */
 }
 
 /* When poor */
 .rating-poor .kpi-value {
-  color: #b91c1c; /* red */
+  color: #ef4444; /* red */
 }
 
 /* Status text */
 .kpi-status.rating-excellent {
-  color: #15803d;
+  color: #2CBC33;
 }
 
 .kpi-status.rating-fair {
-  color: #a16207;
+  color: #facc15;
 }
 
 .kpi-status.rating-poor {
-  color: #b91c1c;
+  color: #ef4444;
 }
 
 
@@ -564,7 +552,7 @@ button:active {
 /* STAR ICON (TOP) */
 .star-icon {
   font-size: 14px;
-  color: #f5c542;
+  color: #ffffff;
   line-height: 1;
   margin-bottom: 4px;
 }
@@ -580,14 +568,14 @@ button:active {
 /* NUMBER (BOTTOM) */
 .star-num {
   font-size: 12px;
-  color: var(--text-main);
+  color: #ffffff;
   line-height: 1;
 }
 
 /* ===== EPI BAR ===== */
 .epi-card {
   background: transparent;
-  color: var(--text-main);
+  color: #fff;
   padding: 0;
   border-radius: 0;
   width: 100%;
@@ -707,6 +695,7 @@ button:active {
 .epi-message {
   margin-top: 16px;
   font-size: 15px;
+  text-align: center;
 }
 
 
@@ -829,9 +818,9 @@ button:active {
 
 /* Title */
 .bee-rating-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-main);
+  color: #ffffff;
   opacity: 0.9;
 }
 
@@ -948,6 +937,7 @@ button:active {
   color: #c62828;
 }
 
+/* ================= HVAC VISUAL BAR ================= */
 
 /* ================= HVAC CARD ================= */
 
@@ -973,8 +963,8 @@ button:active {
 
 .hvac-bar-wrapper {
   position: relative;
-  margin-top: 20px;
-  padding-top: 72px;
+  margin-top: 0;
+  padding-top: 74px;
 }
 
 
@@ -996,7 +986,7 @@ button:active {
   left: 0;
   top: 0;
   height: 100%;
-  background: #3498db;
+  background: #2ecc71;
   border-radius: 14px 0 0 14px;
   transition: width 0.8s var(--motion-smooth), background 0.35s ease;
 }
@@ -1015,32 +1005,27 @@ button:active {
 
 /* Building marker is hidden; the label's dotted stem is the only indicator */
 .hvac-marker.building {
-  display: none;
+  top: 74px;
+  height: 50px;
+  width: 4px;
+  background: var(--marker-color, #111827);
 }
 
 /* Target marker (black circle + dotted stem) */
 .hvac-marker.target {
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: -8px;
+  height: 58px;
+  width: 4px;
+  background: #ff1f1f;
+  transform: translateX(-50%);
 }
 
 .hvac-marker.target .target-dot {
-  width: 16px;
-  height: 16px;
-  border: 3px solid #bc1717;
-  border-radius: 50%;
-  background: #fff;
-  margin: 0 auto;
+  display: none;
 }
 
 .hvac-marker.target::after {
-  content: "";
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  height: 20px;
-  border-left: 2px dashed #bc1717;
-  transform: translateX(-50%);
+  display: none;
 }
 
 
@@ -1052,7 +1037,7 @@ button:active {
   transform: translateX(-50%);
   font-size: 12px;
   text-align: center;
-  color: var(--text-main);
+  color: #ffffff;
   white-space: nowrap;
   opacity: 0.9;
 }
@@ -1063,13 +1048,13 @@ button:active {
 
 .hvac-building-label {
   position: absolute;
-  top: 0;
+  top: 15px;
   transform: translateX(-50%);
   background: #ffffff;
   color: #111827;
   padding: 6px 10px;
   border-radius: 6px;
-  border-left: 5px solid var(--hvac-line, #111827);
+  border-left: 5px solid var(--marker-color, #111827);
   font-size: 12px;
   text-align: center;
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
@@ -1077,17 +1062,11 @@ button:active {
   transition: left 0.8s var(--motion-smooth), border-color 0.35s ease;
   z-index: 4;
   line-height: 1.2;
+
 }
 
 .hvac-building-label::after {
-  content: "";
-  position: absolute;
-  left: var(--bubble-stem-left, 50%);
-  top: calc(100% + 2px);
-  height: 26px;
-  border-left: 3px dotted var(--hvac-line, #111827);
-  transform: translateX(-50%);
-  opacity: 0.95;
+  display: none;
 }
 
 .hvac-building-label b {
@@ -1101,17 +1080,16 @@ button:active {
 /* ================= LEGEND ================= */
 
 .hvac-legend {
-  margin-top: 3rem;
-  font-size: 13px;
+  margin-top: 3.5rem;
+  font-size: 14px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  text-align: center;
+  font-weight: 400;
 }
 
 .hvac-legend .lg {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: block;
 }
 
 .hvac-legend .blue {
@@ -1130,7 +1108,7 @@ button:active {
 
 .hvac-target-label {
   position: absolute;
-  top: 126px;
+  top: 135px;
   transform: translateX(-50%);
   background: #ffffff;
   color: #111827;
@@ -1173,7 +1151,7 @@ button:active {
 
 
 
-/* ######################### Net energy bar ###################################3*/
+/* ######################### Net energu bar ###################################3*/
 
 /* CARD */
 .net-energy-card {
@@ -1238,6 +1216,7 @@ button:active {
 .net-energy-message {
   margin-top: 10px;
   font-size: 14px;
+  text-align: center;
 }
 
 
@@ -1309,13 +1288,13 @@ button:active {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .scale-line {
   width: 40px;
   height: 2px;
-  background: var(--border-strong);
+  background: #ffffff;
   opacity: 0.5;
 }
 
@@ -1485,7 +1464,7 @@ button:active {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: var(--text-main);
+  color: #ffffff;
   position: relative;
 }
 
@@ -1718,7 +1697,7 @@ button:active {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--text-main);
+  color: #e8eefc;
 }
 
 .dg-visual {
@@ -1770,7 +1749,7 @@ button:active {
 /* floating bubble */
 .dg-bubble {
   position: absolute;
-  top: 0;
+  top: 40px;
   transform: translateX(-50%);
   border-radius: 6px;
   padding: 6px 10px;
@@ -1851,7 +1830,7 @@ button:active {
 /* benchmark label */
 .dg-target-label {
   position: absolute;
-  top: 140px;
+  top: 50px;
   transform: translateX(-50%);
   background: #ffffff;
   color: #111827;
@@ -1864,6 +1843,91 @@ button:active {
   text-align: center;
   line-height: 1.2;
   transition: left 0.8s var(--motion-smooth);
+}
+
+.dg-bar-visual {
+  padding-top: 96px;
+  padding-bottom: 118px;
+}
+
+.dg-bar-visual .dg-bubble {
+  width: max-content;
+  min-width: 110px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+
+.dg-bar {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #dcdcdc;
+}
+
+.dg-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 14px 0 0 14px;
+  transition: width 0.8s var(--motion-smooth), background 0.35s ease;
+}
+
+.dg-building-marker,
+.dg-bar .dg-target-marker {
+  position: absolute;
+  top: -8px;
+  height: 58px;
+  width: 4px;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  z-index: 5;
+  transition: left 0.8s var(--motion-smooth);
+}
+
+.dg-building-marker {
+  background: var(--dg-line, #111827);
+}
+
+.dg-bar .dg-target-marker {
+  background: #ff1f1f;
+}
+
+.dg-bar .dg-target-marker::after {
+  display: none;
+}
+
+.dg-bar-visual .dg-bubble::after {
+  display: none;
+}
+
+.dg-bar-visual .dg-target-label {
+  top: 160px;
+}
+
+.dg-status-message {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 360px);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.dg-status-message.is-good {
+  color: rgb(140, 240, 203);
+}
+
+.dg-status-message.is-alert {
+  color: rgb(255, 111, 111);
 }
 
 .contract-theme .dg-good,
@@ -2001,7 +2065,7 @@ button:active {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .scale-line {
@@ -2138,11 +2202,11 @@ button:active {
   width: 104px;
   height: 20px;
   transform: translateX(-50%);
-  border: 4px solid rgba(104, 118, 158, 0.95);
+  border: 4px solid rgba(247, 250, 255, 0.96);
   border-bottom: 0;
-  border-radius: 15px 15px 0 0;
+  border-radius: 18px 18px 0 0;
   z-index: 9;
-  box-shadow: 0 0 0 1px rgba(23, 32, 51, 0.06);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
 }
 
 #outWater .water-card .water-cylinder {
@@ -2232,18 +2296,14 @@ button:active {
 
 #outWater .water-card .water-limit-label {
   position: absolute;
-  left: calc(100% + 10px);
+  left: calc(100% + 8px);
   transform: translateY(50%);
-  padding: 3px 6px;
-  background: #fff8d6;
-  border: 1px solid #e4c84f;
-  border-radius: 6px;
-  color: #a16207;
+  color: #ffe680;
   font-size: 11px;
   font-weight: 700;
   line-height: 1.1;
   white-space: nowrap;
-  text-shadow: none;
+  text-shadow: 0 2px 8px rgba(7, 14, 38, 0.35);
 }
 
 #outWater .water-card .water-actual-label {
@@ -2261,7 +2321,7 @@ button:active {
 
 #outWater .water-card .water-actual-value {
   display: block;
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(24px, 4vw, 39px);
   font-weight: 800;
   letter-spacing: -1.5px;
 }
@@ -2269,7 +2329,7 @@ button:active {
 #outWater .water-card .water-actual-unit {
   display: block;
   margin-top: 8px;
-  font-size: clamp(16px, 1.8vw, 21px);
+  font-size: clamp(14px, 1.7vw, 19px);
   font-weight: 600;
 }
 
@@ -2282,7 +2342,7 @@ button:active {
 }
 
 #outWater .water-card .water-efficiency-message {
-  width: min(100%, 320px);
+  width: min(100%, 250px);
   /* margin-top:1px; */
   text-align: center;
   font-size: 13px;
@@ -2305,64 +2365,64 @@ button:active {
   }
 
   #outWater .water-card .water-tank-wrap {
-    width: 205px;
+    width: 198px;
     padding-top: 4px;
-    height: 345px;
+    height: 336px;
     margin: 0 auto;
   }
 
   #outWater .water-card .water-cylinder {
     top: 23px;
-    width: 186px;
-    height: 320px;
+    width: 180px;
+    height: 312px;
   }
 
   #outWater .water-card .water-limit-overlay {
     top: 23px;
-    width: 186px;
-    height: 320px;
+    width: 180px;
+    height: 312px;
   }
 
   #outWater .water-card .water-tank-cap {
-    top: 31px;
-    width: 94px;
+    top: 30px;
+    width: 91px;
     height: 20px;
     border-width: 4px;
   }
 
   #outWater .water-card .water-actual-value {
-    font-size: clamp(26px, 5vw, 38px);
+    font-size: clamp(24px, 5vw, 38px);
   }
 
   #outWater .water-card .water-actual-unit {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 420px) {
   #outWater .water-card .water-tank-wrap {
-    width: 170px;
+    width: 168px;
     padding-top: 2px;
-    height: 305px;
+    height: 300px;
   }
 
   #outWater .water-card .water-cylinder {
     top: 19px;
-    width: 153px;
-    height: 275px;
+    width: 150px;
+    height: 270px;
   }
 
   #outWater .water-card .water-limit-overlay {
     top: 19px;
-    width: 153px;
-    height: 275px;
+    width: 150px;
+    height: 270px;
   }
 
   #outWater .water-card .water-tank-cap {
     top: 27px;
-    width: 78px;
-    height: 16px;
-    border-width: 4px;
+    width: 75px;
+    height: 15px;
+    border-width: 3px;
   }
 
   #outWater .water-card .water-actual-value {
@@ -2396,7 +2456,7 @@ button:active {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--text-main);
+  color: #e8eefc;
 }
 
 .bee-rating-title,
@@ -2413,7 +2473,7 @@ button:active {
 .water-title,
 .dg-head,
 .epi-title-row {
-  color: var(--text-main);
+  color: #e8eefc;
 }
 
 .epi-title-row.section-heading {
@@ -2566,72 +2626,6 @@ button:active {
     background: #ffffff;
     color: #111827;
   }
-}
-
-/* ===== Light Theme Contrast Pass ===== */
-.header-text,
-label,
-.field-label,
-.kpi-right,
-.summary-metric,
-.metric-value,
-.net-energy-title,
-.net-energy-value,
-.epi-message,
-.net-energy-message,
-.hvac-title,
-.water-title,
-.dg-head,
-.epi-title-row,
-.section-title {
-  color: var(--text-main);
-}
-
-.kpi-ref,
-.kpi-label,
-.kpi-note,
-.epi-sub {
-  color: var(--text-muted);
-}
-
-.rating-excellent,
-.metric-good,
-.badge-positive,
-.text-positive,
-.kpi-status.rating-excellent,
-.rating-excellent .kpi-value,
-#outWater .water-card .water-efficiency-message.is-good {
-  color: #15803d;
-}
-
-.rating-fair,
-.badge-neutral,
-.text-neutral,
-.kpi-status.rating-fair,
-.rating-fair .kpi-value,
-.scale-target span,
-.scale-highlight span {
-  color: #a16207;
-}
-
-.rating-poor,
-.metric-bad,
-.badge-negative,
-.text-negative,
-.kpi-status.rating-poor,
-.rating-poor .kpi-value,
-#outWater .water-card .water-efficiency-message.is-alert {
-  color: #b91c1c;
-}
-
-#results .result-block {
-  background: var(--surface-soft);
-  border: 1px solid var(--border-soft);
-}
-
-#results .results-content,
-#results .results-subsection {
-  color: var(--text-main);
 }
 
 /* ===== Icon Left-Edge Alignment ===== */
