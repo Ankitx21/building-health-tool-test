@@ -1183,6 +1183,7 @@ function updateHvacBar(sfPerTR) {
 
   const buildingLabel = document.getElementById("hvacBuildingLabel");
   const buildingValue = document.getElementById("hvacBuildingValue");
+  const statusMessage = document.getElementById("hvacStatusMessage");
   const bar = document.querySelector(".hvac-bar");
 
   /* ================= DYNAMIC SCALE ================= */
@@ -1217,16 +1218,24 @@ function updateHvacBar(sfPerTR) {
   const TOLERANCE = 1; // allow ±1 sqft/TR
 
   let color;
+  let statusClass;
+  let statusText;
   const labelLineColor = "#111827";
 
-  if (Math.abs(sfPerTR - TARGET) <= TOLERANCE) {
+  if (sfPerTR >= 700 && sfPerTR <= TARGET + TOLERANCE) {
     color = "#2ecc71"; // GREEN (exact / acceptable)
+    statusClass = "green";
+    statusText = "Right amount of cooling provided";
   }
   else if (sfPerTR < TARGET) {
     color = "#3498db"; // BLUE (more cooling provided)
+    statusClass = "blue";
+    statusText = "More cooling provided than needed";
   }
   else {
     color = "#e74c3c"; // RED (less cooling provided)
+    statusClass = "red";
+    statusText = "Less cooling provided than needed";
   }
 
   /* ================= APPLY COLORS ================= */
@@ -1240,6 +1249,10 @@ function updateHvacBar(sfPerTR) {
 
   // Change text color
   buildingValue.style.color = "#111827";
+
+  if (statusMessage) {
+    statusMessage.innerHTML = `<span class="lg ${statusClass}">${statusText}</span>`;
+  }
 }
 
 // ############################ WATER CYLINDER ##################################
@@ -1451,7 +1464,9 @@ function renderDensitySizingBar({
   value,
   valueUnit,
   target,
-  targetText
+  targetText,
+  goodStatusText,
+  badStatusText
 }) {
   const axisMax = Math.max(value, target);
   const valuePct = getSizingBarPct(value, axisMax);
@@ -1460,6 +1475,8 @@ function renderDensitySizingBar({
   const good = value <= target;
   const fillColor = good ? "#2ecc71" : "#e74c3c";
   const buildingLineColor = good ? "#111827" : "#111827";
+  const statusText = good ? goodStatusText : badStatusText;
+  const statusClass = good ? "is-good" : "is-alert";
 
   root.innerHTML = `
     <div class="${themeClass}">
@@ -1485,6 +1502,8 @@ function renderDensitySizingBar({
           <span>ASSURE KPI</span>
           <b>${targetText}</b>
         </div>
+
+        <div class="dg-status-message ${statusClass}">${statusText}</div>
       </div>
     </div>
   `;
@@ -1523,7 +1542,9 @@ function renderDgSizingVisual(dgWsf) {
     value: dgWsf,
     valueUnit: "W/sqft",
     target: TARGET,
-    targetText: "&lt; 5 W/sqft"
+    targetText: "&lt; 5 W/sqft",
+    goodStatusText: "Right amount of backup power",
+    badStatusText: "More backup power than needed"
   });
 }
 
@@ -1556,11 +1577,13 @@ function renderContractSizingVisual(cdWsf) {
     value: cdWsf,
     valueUnit: "W/sqft",
     target: TARGET,
-    targetText: "&lt; 5 W/sqft"
+    targetText: "&lt; 5 W/sqft",
+    goodStatusText: "Right-sized power capacity",
+    badStatusText: "More power capacity than needed"
   });
 }
-
 /*************************************************
+
  * RENDER RESULTS (MATCHES HTML EXACTLY)
  *************************************************/
 function renderResults(r) {
