@@ -817,7 +817,7 @@ button:active {
 
 /* Title */
 .bee-rating-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #ffffff;
   opacity: 0.9;
@@ -1080,16 +1080,15 @@ button:active {
 
 .hvac-legend {
   margin-top: 3.5rem;
-  font-size: 13px;
+  font-size: 14px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  text-align: center;
+  font-weight: 400;
 }
 
 .hvac-legend .lg {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: block;
 }
 
 .hvac-legend .blue {
@@ -1846,7 +1845,7 @@ button:active {
 
 .dg-bar-visual {
   padding-top: 96px;
-  padding-bottom: 78px;
+  padding-bottom: 118px;
 }
 
 .dg-bar-visual .dg-bubble {
@@ -1907,6 +1906,26 @@ button:active {
 
 .dg-bar-visual .dg-target-label {
   top: 160px;
+}
+
+.dg-status-message {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 360px);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.dg-status-message.is-good {
+  color: rgb(140, 240, 203);
+}
+
+.dg-status-message.is-alert {
+  color: rgb(255, 111, 111);
 }
 
 .contract-theme .dg-good,
